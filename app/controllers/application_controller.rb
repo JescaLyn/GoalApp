@@ -26,4 +26,14 @@ class ApplicationController < ActionController::Base
   def user_params
     params.require(:user).permit(:username, :password)
   end
+
+  def ensure_current_user
+    return if current_user
+    redirect_to new_session_url
+  end
+
+  def ensure_no_current_user
+    return unless current_user
+    redirect_to root_url
+  end
 end
