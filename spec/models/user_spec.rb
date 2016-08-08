@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  FactoryGirl.create(:user)
+  before :each do
+    FactoryGirl.create(:user)
+  end
 
   describe "User create" do
     it "encrypts password" do
@@ -12,8 +14,7 @@ RSpec.describe User, type: :model do
 
     it "encrypts using BCrypt" do
       expect(BCrypt::Password).to receive(:create)
-      # FactoryGirl.create(:user)
-      User.new(username: "joline", password: "password")
+      FactoryGirl.build(:user).save
     end
 
     it "requires password to be at least six characters" do
@@ -27,4 +28,18 @@ RSpec.describe User, type: :model do
   it { should validate_presence_of(:session_token) }
   it { should validate_uniqueness_of(:session_token) }
   it { should validate_uniqueness_of(:username) }
+
+  describe "User::find_by_credentials" do
+    subject(:user) { User.new(username: "happygolucky", password: "itsallalie") }
+    before :each do
+      user.save!
+    end
+
+    it "finds the right user" do
+      expect(User.find_by_credentials("happygolucky", "itsallalie")).to eq(user)
+    end
+    it "doesn't find the user without the correct password" do
+      expect(User.find_by_credentials("happygolucky", "WRONG")).to eq(nil)
+    end
+  end
 end
