@@ -12,12 +12,13 @@ RSpec.describe User, type: :model do
 
     it "encrypts using BCrypt" do
       expect(BCrypt::Password).to receive(:create)
-      FactoryGirl.create(:user)
+      # FactoryGirl.create(:user)
+      User.new(username: "joline", password: "password")
     end
 
     it "requires password to be at least six characters" do
       user = FactoryGirl.build(:user_short_password)
-      expect(user.is_valid?).to be_falsy
+      expect(user.valid?).to be_falsy
     end
   end
 
