@@ -22,4 +22,8 @@ class ApplicationController < ActionController::Base
   def errors
     flash[:errors] || []
   end
+
+  def user_params
+    params.require(:user).permit(:username, :password)
+  end
 end
