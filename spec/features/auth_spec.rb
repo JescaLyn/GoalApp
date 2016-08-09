@@ -10,10 +10,7 @@ feature "the signup process" do
 
   feature "signing up a user" do
     before :each do
-      visit new_user_url
-      fill_in 'Username', with: "jon"
-      fill_in 'Password', with: "iknownothing"
-      click_on "Create User"
+      register_as("jon")
     end
 
     scenario "shows username on the homepage after signup" do
@@ -24,11 +21,8 @@ end
 
 feature "logging in" do
   before :each do
-    User.create!(username: "jon", password: "iknownothing")
-    visit new_session_url
-    fill_in 'Username', with: "jon"
-    fill_in 'Password', with: "iknownothing"
-    click_on "Login"
+    User.create!(username: "jon", password: "password")
+    login_as("jon")
   end
 
   scenario "shows username on the homepage after login" do
@@ -48,11 +42,8 @@ feature "logging out" do
   end
 
   scenario "doesn't show username on the homepage after logout" do
-    User.create!(username: "jon", password: "iknownothing")
-    visit new_session_url
-    fill_in 'Username', with: "jon"
-    fill_in 'Password', with: "iknownothing"
-    click_on "Login"
+    User.create!(username: "jon", password: "password")
+    login_as("jon")
     click_on "Logout"
     expect(page).to_not have_content("jon")
   end
